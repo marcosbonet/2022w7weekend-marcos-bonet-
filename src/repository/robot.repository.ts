@@ -1,16 +1,17 @@
 import mongoose, { Schema, model } from 'mongoose';
-import { PlayerProto, PlayerTypes } from '../entities/argentinian.Player.js';
+import { RobotProto, RobotTypes } from '../entities/robot.Types.js';
 import { Data } from './repository.js';
 
-export class PLayerRepository implements Data<PlayerTypes> {
+export class RobotRepository implements Data<RobotTypes> {
     #schema = new Schema({
-        player: String,
-        position: String,
-        age: Number,
-        club: String,
-        marketPrice: String,
+        robotName: String,
+        velocity: Number,
+        resistent: Number,
+        creationDate: String,
+        id: Number,
+        img: String,
     });
-    #Model = model('PlayerTypes', this.#schema, 'players');
+    #Model = model('RobotTypes', this.#schema, 'Robots');
 
     constructor() {
         this.#schema.set('toJSON', {
@@ -22,25 +23,25 @@ export class PLayerRepository implements Data<PlayerTypes> {
         });
     }
 
-    async getAll(): Promise<Array<PlayerTypes>> {
+    async getAll(): Promise<Array<RobotTypes>> {
         return this.#Model.find();
     }
-    async get(id: string): Promise<PlayerTypes> {
-        const result = await this.#Model.findById(id); //as PlayerTypes;
+    async get(id: string): Promise<RobotTypes> {
+        const result = await this.#Model.findById(id); //as RobotTypes;
         if (!result) throw new Error('Not found id');
-        return result as PlayerTypes;
+        return result as RobotTypes;
     }
 
-    async post(data: PlayerProto): Promise<PlayerTypes> {
+    async post(data: Partial<RobotProto>): Promise<RobotTypes> {
         const result = await this.#Model.create(data);
-        return result as PlayerTypes;
+        return result as RobotTypes;
     }
-    async patch(id: string, data: Partial<PlayerTypes>): Promise<PlayerTypes> {
+    async patch(id: string, data: Partial<RobotTypes>): Promise<RobotTypes> {
         const result = await this.#Model.findByIdAndUpdate(id, data, {
             new: true,
         });
         if (!result) throw new Error('Not found id');
-        return result as PlayerTypes;
+        return result as RobotTypes;
     }
 
     async delete(id: string): Promise<void> {

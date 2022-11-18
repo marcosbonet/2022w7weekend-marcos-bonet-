@@ -1,26 +1,28 @@
 import mongoose from 'mongoose';
 import { dbConnect } from '../DB.connect';
-import { PLayerRepository } from './player.mongo.repository';
+import { RobotRepository } from './robot.repository';
 
 const PlayerMock = [
     {
-        player: 'string',
-        position: 'string',
-        age: 2,
-        club: 'string',
-        marketPrice: 'string',
+        robotName: 'string',
+        velocity: 3,
+        resistent: 4,
+        creationDate: 'string',
+        id: 1,
+        img: 'string',
     },
     {
-        player: 'string',
-        position: 'string',
-        age: 3,
-        club: 'string',
-        marketPrice: 'string',
+        robotName: 'string',
+        velocity: 3,
+        resistent: 4,
+        creationDate: 'string',
+        id: 2,
+        img: 'string',
     },
 ];
 
 describe('Given ...', () => {
-    const repository = new PLayerRepository();
+    const repository = new RobotRepository();
 
     let testIds: Array<string>;
     beforeAll(async () => {
@@ -33,22 +35,23 @@ describe('Given ...', () => {
 
     test('Then getAll...', async () => {
         const result = await repository.getAll();
-        expect(result[0].player).toEqual(PlayerMock[0].player);
+        expect(result[0].robotName).toEqual(PlayerMock[0].robotName);
     });
     test('the get should have been called', async () => {
         const result = await repository.get(testIds[0]);
-        expect(result.club).toBe('string');
+        expect(result.velocity).toBe('string');
     });
     test('the post should have been called', async () => {
-        const newPlayer = {
-            player: 'string',
-            position: 'string',
-            age: 3,
-            club: 'string',
-            marketPrice: 'string',
+        const newRobot = {
+            robotName: 'string',
+            velocity: 3,
+            resistent: 4,
+            creationDate: 'string',
+            id: 2,
+            img: 'string',
         };
-        const result = await repository.post(newPlayer);
-        expect(result).toEqual(newPlayer.player);
+        const result = await repository.post(newRobot);
+        expect(result).toEqual(newRobot.robotName);
     });
     test('the patch should have been called', async () => {
         const result = await repository.patch('', PlayerMock[0]);
