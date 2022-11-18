@@ -55,7 +55,7 @@ export class RobotController {
     async delete(req: Request, resp: Response, next: NextFunction) {
         try {
             await this.dataModel.delete(req.params.id);
-            resp.json({}).end();
+            resp.json({ id: req.params.id });
         } catch (error) {
             next(this.#createHttpError(error as Error));
             return;
