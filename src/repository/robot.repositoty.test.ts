@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { dbConnect } from '../DB.connect';
-import { RobotRepository } from './robot.repository';
+import { dbConnect } from '../DB.connect.js';
+import { RobotRepository } from './robot.repository.js';
 
 const PlayerMock = [
     {
@@ -8,7 +8,7 @@ const PlayerMock = [
         velocity: 3,
         resistent: 4,
         creationDate: 'string',
-        id: 1,
+        id: 'string',
         img: 'string',
     },
     {
@@ -16,7 +16,7 @@ const PlayerMock = [
         velocity: 3,
         resistent: 4,
         creationDate: 'string',
-        id: 2,
+        id: 'string',
         img: 'string',
     },
 ];

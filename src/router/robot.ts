@@ -1,15 +1,12 @@
 import { Router } from 'express';
-import { PlayerController } from '../controllers/player.js';
-import { PLayerRepository } from '../repository/player.mongo.repository.js';
+import { RobotController } from '../controllers/robotController.js';
+import { RobotRepository } from '../repository/robot.repository.js';
 
-export const playerRouter = Router();
+export const robotRouter = Router();
 
-const controller = new PlayerController(new PLayerRepository());
-
-playerRouter.get('/:id', controller.get.bind(controller));
-
-playerRouter.get('/', controller.getAll.bind(controller));
-
-playerRouter.post('/', controller.post.bind(controller));
-playerRouter.patch('/:id', controller.patch.bind(controller));
-playerRouter.delete('/:id', controller.delete.bind(controller));
+const controller = new RobotController(new RobotRepository());
+robotRouter.get('/:id', controller.get.bind(controller));
+robotRouter.get('/', controller.getAll.bind(controller));
+robotRouter.post('/', controller.post.bind(controller));
+robotRouter.patch('/:id', controller.patch.bind(controller));
+robotRouter.delete('/:id', controller.delete.bind(controller));

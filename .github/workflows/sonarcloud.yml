@@ -65,7 +65,7 @@ jobs:
           args:
             # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
             # mandatory
-            -Dsonar.projectKey=marcosbonet_2022w7ch1-marcos-bonet-
+            -Dsonar.projectKey=marcosbonet_2022w7weekend-marcos-bonet-
             -Dsonar.organization=marcosbonet
 
             # Comma-separated paths to directories containing main source files.
