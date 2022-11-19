@@ -12,6 +12,5 @@ export type RobotTypes = {
     velocity: number;
     resistent: number;
     creationDate: string;
-
     img: string;
 };

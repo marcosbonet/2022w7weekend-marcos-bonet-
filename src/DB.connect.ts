@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { USER, CLUSTER, PASSW } from './config.js';
 
 export function dbConnect() {
-    const DBName = 'robot';
+    const DBName = process.env.NODE_ENV !== 'test' ? 'Robots' : 'CodersTesting';
     let uri = `mongodb+srv://${USER}:${PASSW}`;
     uri += `@${CLUSTER}/${DBName}?retryWrites=true&w=majority`;
 
