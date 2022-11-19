@@ -5,7 +5,6 @@ import { RobotRepository } from './robot.repository.js';
 
 const mockData = [
     {
-        id: 'string',
         robotName: 'string',
         velocity: 1,
         resistent: 2,
@@ -14,7 +13,6 @@ const mockData = [
         img: 'string',
     },
     {
-        id: 'string',
         robotName: 'string',
         velocity: 1,
         resistent: 2,
@@ -41,12 +39,14 @@ describe('Given RobotRepository', () => {
         test('Then getAll should have been called', async () => {
             const result = await repository.getAll();
             expect(result[0].img).toEqual(mockData[0].img);
-            expect(await repository.get.all);
+            expect(await repository.getAll());
         });
+
         test('Then get should have been called', async () => {
-            const result = await repository.get(1);
-            expect(result.img).toEqual('jsd');
+            const result = await repository.get(testIds[0]);
+            expect(result.robotName).toBe(mockData[0].robotName);
         });
+
         test('Then post should have been called', async () => {
             const newRobot = {
                 id: 'string',
@@ -60,13 +60,18 @@ describe('Given RobotRepository', () => {
             expect(result.velocity).toEqual(newRobot.velocity);
         });
         test('Then patch should have been called', async () => {
-            const result = await repository.patch(4, mockData[0]);
-            expect(result).toEqual(mockData);
+            const updateRobot = {
+                robotName: 'Test',
+            };
+            const result = await repository.patch(testIds[0], updateRobot);
+            expect(result.robotName).toEqual(updateRobot.robotName);
         });
+
         test('Then delete should have been called', async () => {
-            const result = await repository.delete(2);
-            expect(result).toEqual([]);
+            const result = await repository.delete(testIds[0]);
+            expect(result).toEqual({ id: testIds[0] });
         });
+
         test('Then if id is bad formated delete should throw an error', async () => {
             expect(async () => {
                 await repository.delete(2);
