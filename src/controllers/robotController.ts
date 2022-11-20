@@ -25,7 +25,12 @@ export class RobotController {
             const data = await this.dataModel.get(req.params.id);
             resp.json({ data });
         } catch (error) {
-            next(this.#createHttpError(error as Error));
+            const httpError = new HTTPError(
+                503,
+                'Service unavailable',
+                (error as Error).message
+            );
+            next(httpError);
         }
     }
 
@@ -48,7 +53,13 @@ export class RobotController {
             const robot = await this.dataModel.patch(req.params.id, req.body);
             resp.json({ robot });
         } catch (error) {
-            next(this.#createHttpError(error as Error));
+            (error as Error).message === 'Not found id';
+            const httpError = new HTTPError(
+                404,
+                'Not Found',
+                (error as Error).message
+            );
+            next(httpError);
         }
     }
 
@@ -57,24 +68,13 @@ export class RobotController {
             await this.dataModel.delete(req.params.id);
             resp.json({ id: req.params.id });
         } catch (error) {
-            next(this.#createHttpError(error as Error));
-            return;
-        }
-    }
-    #createHttpError(error: Error) {
-        if ((error as Error).message === 'Not found id') {
+            (error as Error).message === 'Not found id';
             const httpError = new HTTPError(
                 404,
                 'Not Found',
                 (error as Error).message
             );
-            return httpError;
+            next(httpError);
         }
-        const httpError = new HTTPError(
-            503,
-            'Service unavailable',
-            (error as Error).message
-        );
-        return httpError;
     }
 }
