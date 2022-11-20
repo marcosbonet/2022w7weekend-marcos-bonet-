@@ -14,7 +14,7 @@ app.get('/', (_req, res) => {
     res.send('Robot API').end();
 });
 
-app.use('/robot', robotRouter);
+app.use('/Robots', robotRouter);
 
 app.use(
     (
