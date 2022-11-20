@@ -10,7 +10,7 @@ export class RobotRepository implements Data<RobotTypes> {
         creationDate: String,
         img: String,
     });
-    #Model = model('RobotTypes', this.#schema, 'Robots');
+    #Model = model('RobotTypes', this.#schema, 'robots');
 
     constructor() {
         this.#schema.set('toJSON', {
