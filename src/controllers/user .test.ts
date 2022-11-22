@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { CustomError, HTTPError } from '../interfaces/error';
-import { UserRepository } from '../repository/user';
-import { UserController } from './user';
+import { CustomError, HTTPError } from '../interfaces/error.js';
+import { UserRepository } from '../repository/user.js';
+import { UserController } from './user.js';
 
 jest.mock('../repository/users');
 
