@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import { RobotTypes } from '../entities/robot.Types.js';
 import { User } from '../entities/user.js';
-import { CustomError, HTTPError } from '../interfaces/error.js';
-import { BasicData } from '../repository/data.js';
+import { HTTPError } from '../interfaces/error.js';
+import { BasicData, Data } from '../repository/repository.js';
 import { createToken, passwdValidate } from '../Services/auth.js';
 
 export class UserController {
-    createHttpError(error: CustomError) {
-        throw new Error('Method not implemented.');
-    }
-    constructor(public readonly repository: BasicData<User>) {
+    constructor(
+        public readonly repository: BasicData<User>,
+        public readonly robotRepo: Data<RobotTypes>
+    ) {
         //
     }
 
@@ -29,12 +30,17 @@ export class UserController {
     async login(req: Request, resp: Response, next: NextFunction) {
         try {
             const user = await this.repository.findOne({ name: req.body.name });
+            user.id;
             const isPasswdValid = await passwdValidate(
                 req.body.passwd,
                 user.passwd
             );
             if (!isPasswdValid) throw new Error();
-            const token = createToken({ userName: user.name });
+            const token = createToken({
+                id: user.id,
+                name: user.name,
+                role: user.role,
+            });
             resp.json({ token });
         } catch (error) {
             next(this.#createHttpError(error as Error));

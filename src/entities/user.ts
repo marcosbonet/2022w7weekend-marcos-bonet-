@@ -1,10 +1,11 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export type ProtoUser = {
     name?: string;
     email?: string;
     passwd?: string;
     role?: string;
+    robots?: Array<typeof mongoose.Types.ObjectId>;
 };
 
 export type User = {
@@ -13,9 +14,10 @@ export type User = {
     email: string;
     passwd: string;
     role: string;
+    robots: Array<typeof mongoose.Types.ObjectId>;
 };
 
-export const userSchema = new Schema({
+export const userSchema = new Schema<User>({
     name: {
         type: String,
         required: true,

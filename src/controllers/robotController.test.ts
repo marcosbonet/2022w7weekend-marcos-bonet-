@@ -9,8 +9,8 @@ jest.mock('../repository/robot.repository.js');
 
 const mockData: Array<RobotTypes> = [
     {
-        id: 'string',
-        robotName: 'string',
+        id: '11tring',
+        robotName: 'strin33g',
         velocity: 2,
         resistent: 4,
         creationDate: 'string',
@@ -21,8 +21,8 @@ const mockData: Array<RobotTypes> = [
         robotName: 'string',
         velocity: 1,
         resistent: 2,
-        creationDate: 'string',
-        img: 'string',
+        creationDate: 'string3',
+        img: 'string3',
     },
 ];
 
