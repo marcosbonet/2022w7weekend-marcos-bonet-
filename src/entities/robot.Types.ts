@@ -3,7 +3,7 @@ export type RobotProto = {
     velocity?: number;
     resistent?: number;
     creationDate?: string;
-    img: string;
+    img?: string;
 };
 
 export type RobotTypes = {
