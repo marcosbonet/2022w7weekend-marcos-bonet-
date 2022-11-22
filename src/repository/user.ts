@@ -1,9 +1,15 @@
 import { model } from 'mongoose';
 import { User, userSchema } from '../entities/user.js';
 import { passwdEncrypt } from '../Services/auth.js';
-import { BasicRepo, id } from './repo.js';
+import { BasicData, id } from './data.js';
 
-export class UserRepository implements BasicRepo<User> {
+export class UserRepository implements BasicData<User> {
+    getUserModel() {
+        throw new Error('Method not implemented.');
+    }
+    getModel() {
+        throw new Error('Method not implemented.');
+    }
     #Model = model('Coffee', userSchema, 'coffees');
 
     async get(id: id): Promise<User> {
