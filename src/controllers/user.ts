@@ -28,7 +28,7 @@ export class UserController {
 
     async login(req: Request, resp: Response, next: NextFunction) {
         try {
-            const user = await this.repository.find({ name: req.body.name });
+            const user = await this.repository.findOne({ name: req.body.name });
             const isPasswdValid = await passwdValidate(
                 req.body.passwd,
                 user.passwd
