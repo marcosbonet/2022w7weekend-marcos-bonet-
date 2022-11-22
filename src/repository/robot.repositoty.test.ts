@@ -5,7 +5,7 @@ import { RobotRepository } from './robot.repository';
 const mockData = [
     {
         id: 'bs12df4',
-        robotName: 'Pepe',
+        robotName: 'juan',
         velocity: 5,
         resistent: 4,
         creationDate: '05/85',
@@ -13,10 +13,10 @@ const mockData = [
     },
     {
         id: 'as12df3',
-        robotName: 'Pepe',
+        robotName: 'raul',
         velocity: 5,
         resistent: 4,
-        creationDate: '05/85',
+        creationDate: '06/85',
         img: 'url.img',
     },
 ];
@@ -57,10 +57,10 @@ describe('Given the robots repository,', () => {
         test('It should return the new Robot', async () => {
             const newRobot = {
                 id: 'cs12df5',
-                robotName: 'Pepe',
+                robotName: 'Pee',
                 velocity: 5,
                 resistent: 4,
-                creationDate: '05/85',
+                creationDate: '08/85',
                 img: 'url.img',
             };
             const result = await repository.post(newRobot);
