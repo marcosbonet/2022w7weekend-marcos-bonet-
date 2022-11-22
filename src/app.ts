@@ -5,6 +5,7 @@ import { robotRouter } from './router/robot.js';
 
 import { setCors } from './middlewares/cors.js';
 import { errorManager } from './middlewares/errors.js';
+import { usersRouter } from './router/users.js';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -17,6 +18,7 @@ app.get('/', (_req, res) => {
 });
 app.use(setCors);
 app.use('/Robots', robotRouter);
+app.use('/user', usersRouter);
 
 app.use(errorManager);
 

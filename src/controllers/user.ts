@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { User } from '../entities/user.js';
 import { CustomError, HTTPError } from '../interfaces/error.js';
-import { BasicRepo } from '../repository/repo.js';
+import { BasicData } from '../repository/data.js';
 import { createToken, passwdValidate } from '../Services/auth.js';
 
 export class UserController {
     createHttpError(error: CustomError) {
         throw new Error('Method not implemented.');
     }
-    constructor(public readonly repository: BasicRepo<User>) {
+    constructor(public readonly repository: BasicData<User>) {
         //
     }
 
