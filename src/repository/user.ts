@@ -19,7 +19,6 @@ export class UserRepository implements BasicData<User> {
     }
 
     async post(data: Partial<User>): Promise<User> {
-        // ESTO HACE REGISTER
         if (typeof data.passwd !== 'string') throw new Error('');
         data.passwd = await passwdEncrypt(data.passwd);
         const result = await this.#Model.create(data);
