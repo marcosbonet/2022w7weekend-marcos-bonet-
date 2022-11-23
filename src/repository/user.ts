@@ -4,10 +4,14 @@ import { passwdEncrypt } from '../Services/auth.js';
 import { BasicData, id } from './repository.js';
 
 export class UserRepository implements BasicData<User> {
-    getUserModel() {
-        throw new Error('Method not implemented.');
-    }
+    static instance: UserRepository;
 
+    public static getInstance(): UserRepository {
+        if (!UserRepository.instance) {
+            UserRepository.instance = new UserRepository();
+        }
+        return UserRepository.instance;
+    }
     #Model = model('User', userSchema, 'users');
 
     async get(id: id): Promise<User> {

@@ -6,8 +6,8 @@ import { UserRepository } from '../repository/user.js';
 export const usersRouter = Router();
 
 const controller = new UserController(
-    new UserRepository(),
-    new RobotRepository()
+    UserRepository.getInstance(),
+    RobotRepository.getInstance()
 );
 
 usersRouter.post('/register', controller.register.bind(controller));

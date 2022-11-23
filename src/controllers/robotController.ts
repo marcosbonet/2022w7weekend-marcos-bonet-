@@ -1,3 +1,4 @@
+import { debug } from 'console';
 import { NextFunction, Request, Response } from 'express';
 import { RobotTypes } from '../entities/robot.Types.js';
 import { User } from '../entities/user.js';
@@ -10,7 +11,7 @@ export class RobotController {
         public dataModel: Data<RobotTypes>,
         public userRepo: BasicData<User>
     ) {
-        //
+        debug('instance');
     }
     async getAll(req: Request, resp: Response, next: NextFunction) {
         try {
