@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { RobotTypes } from '../entities/robot.Types.js';
+import { User } from '../entities/user.js';
 
 import { HTTPError } from '../interfaces/error.js';
-import { Data } from '../repository/repository.js';
+import { BasicData, Data } from '../repository/repository.js';
 
 export class RobotController {
-    constructor(public dataModel: Data<RobotTypes>) {}
+    constructor(
+        public dataModel: Data<RobotTypes>,
+        public userRepo: BasicData<User>
+    ) {
+        //
+    }
     async getAll(req: Request, resp: Response, next: NextFunction) {
         try {
             const data = await this.dataModel.getAll();

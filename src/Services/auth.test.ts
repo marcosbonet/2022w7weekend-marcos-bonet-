@@ -7,7 +7,7 @@ import { SECRET } from '../config.js';
 // config.SECRET = 'fjksdjksfjk'
 
 const mock = {
-    userName: 'Pepe',
+    userName: 'nestor',
 };
 
 describe('Given createToken ', () => {

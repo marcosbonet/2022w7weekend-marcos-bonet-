@@ -7,7 +7,7 @@ jest.mock('../repository/users');
 
 const mockData = [
     {
-        name: 'Pepe',
+        name: 'tuel',
         email: 'pepe@gmail.com',
         password: 'pepe1234',
         role: 'Admin',

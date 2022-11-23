@@ -2,7 +2,9 @@ import http from 'http';
 import { app } from './app.js';
 import { CustomError } from './interfaces/error.js';
 import { dbConnect } from './DB.connect.js';
+import createDebug from 'debug';
 
+const debug = createDebug('W8');
 //bugfix render import
 const port = process.env.PORT || 3300;
 const server = http.createServer(app);
@@ -29,5 +31,8 @@ server.on('error', (error: CustomError, response: http.ServerResponse) => {
 });
 
 dbConnect()
-    .then(() => server.listen(port))
+    .then((mongoose) => {
+        debug('DB', mongoose.connection.db.databaseName);
+        server.listen(port);
+    })
     .catch((error) => server.emit(error));

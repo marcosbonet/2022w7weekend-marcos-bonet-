@@ -1,26 +1,13 @@
-import mongoose, { model, Schema } from 'mongoose';
-import { RobotProto, RobotTypes } from '../entities/robot.Types.js';
-import { Data, id } from './data.js';
+import mongoose, { model } from 'mongoose';
+import {
+    RobotProto,
+    robotSchema,
+    RobotTypes,
+} from '../entities/robot.Types.js';
 
+import { Data, id } from './repository.js';
 export class RobotRepository implements Data<RobotTypes> {
-    #schema = new Schema({
-        robotName: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-
-        velocity: Number,
-        resistent: Number,
-        creationDate: String,
-        img: String,
-    });
-
-    #Model = model('Robot', this.#schema, 'robots');
-
-    constructor() {
-        //
-    }
+    #Model = model('Robots', robotSchema, 'robots');
 
     async getAll(): Promise<Array<RobotTypes>> {
         return this.#Model.find();
@@ -30,6 +17,14 @@ export class RobotRepository implements Data<RobotTypes> {
         const result = await this.#Model.findById(id);
         if (!result) throw new Error('Not found id');
         return result as RobotTypes;
+    }
+    async findOne(search: {
+        [key: string]: string | number | Date;
+    }): Promise<RobotTypes> {
+        console.log({ search });
+        const result = await this.#Model.findOne(search); //as Robot;
+        if (!result) throw new Error('Not found id');
+        return result as unknown as RobotTypes;
     }
 
     async post(newRobot: RobotProto): Promise<RobotTypes> {
@@ -45,16 +40,22 @@ export class RobotRepository implements Data<RobotTypes> {
         return result as RobotTypes;
     }
 
-    async delete(id: id): Promise<{ id: id }> {
+    async delete(id: id): Promise<id> {
         const result = (await this.#Model.findByIdAndDelete(id)) as RobotTypes;
         if (result === null) throw new Error('Not found id');
-        return { id: id } as unknown as Promise<RobotTypes>;
+        return id;
     }
 
-    disconnect() {
+    #disconnect() {
         mongoose.disconnect();
     }
 
+    #generateDate(date: string | undefined) {
+        if (!date) return new Date();
+        const validDate =
+            new Date(date) === new Date('') ? new Date() : new Date(date);
+        return validDate;
+    }
     getModel() {
         return this.#Model;
     }

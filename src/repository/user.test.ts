@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 import { dbConnect } from '../DB.connect.js';
 import { UserRepository } from './user.js';
-
 describe('Given UserRepository', () => {
     const mockData = [
         {
-            name: 'Pepe',
+            name: 'pedro',
             email: 'pepe@gmail.com',
             password: 'pepe1234',
             role: 'Admin',

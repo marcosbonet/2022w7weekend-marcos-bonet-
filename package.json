@@ -1,5 +1,5 @@
 {
-    "name": "week6.server",
+    "name": "2022w7weekend-marcos-bonet-",
     "version": "1.0.0",
     "description": "modula",
     "main": "index.js",
@@ -10,8 +10,8 @@
         "build": "tsc",
         "build:dev": "tsc --watch",
         "test": "jest --watchAll --coverage",
-        "test:prod": "jest --coverage",
-        "start:build": "run-p build start:dev"
+        "test:prod": "cross-env NODE_ENV=test jest --coverage --passWithNoTests",
+        "start:build": "run-p build:dev start:dev"
     },
     "keywords": [],
     "author": "",
