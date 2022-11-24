@@ -1,49 +1,39 @@
 import { MongooseError } from 'mongoose';
 import { dbConnect } from '../DB.connect';
+import { Robot } from '../entities/robot.Types';
 import { RobotRepository } from './robot.repository';
 
 const mockData = [
     {
-        id: 'bs12df4',
-        robotName: 'juan',
-        velocity: 5,
-        resistent: 4,
-        creationDate: '05/85',
-        img: 'url.img',
+        name: 'manuel',
     },
     {
-        id: 'as12df3',
-        robotName: 'raul',
-        velocity: 5,
-        resistent: 4,
-        creationDate: '06/85',
-        img: 'url.img',
+        name: 'rfederico',
     },
 ];
 
 describe('Given the robots repository,', () => {
-    const repository = new RobotRepository();
+    const repository = RobotRepository.getInstance();
     let testIds: Array<string>;
-
-    beforeAll(async () => {
-        await dbConnect();
-        await repository.getModel().deleteMany();
-        await repository.getModel().insertMany(mockData);
-        const data = await repository.getModel().find();
-        testIds = [data[0].id, data[1].id];
-    });
-
     describe('When we instantiate getAll()', () => {
+        beforeEach(async () => {
+            await dbConnect();
+            await Robot.deleteMany();
+            await Robot.insertMany(mockData);
+            const data = await Robot.find();
+            testIds = [data[0].id, data[1].id];
+        });
+
         test('It should return an array of all Robots', async () => {
             const result = await repository.getAll();
-            expect(result[0].robotName).toEqual(mockData[0].robotName);
+            expect(result[0].name).toEqual(mockData[0].name);
         });
     });
 
     describe('When we instantiate get(), with an id', () => {
         test('It should return the Robot of that id', async () => {
             const result = await repository.get(testIds[0]);
-            expect(result.robotName).toEqual(mockData[0].robotName);
+            expect(result.name).toEqual(mockData[0].name);
         });
 
         test('If the id is not valid, it should throw an error', async () => {
@@ -56,25 +46,24 @@ describe('Given the robots repository,', () => {
     describe('When we instantiate post()', () => {
         test('It should return the new Robot', async () => {
             const newRobot = {
-                id: 'cs12df5',
-                robotName: 'Pee',
-                velocity: 5,
-                resistent: 4,
-                creationDate: '08/85',
+                name: 'robert',
                 img: 'url.img',
+                speed: 5,
+                resistance: 4,
+                date: '06/85',
             };
             const result = await repository.post(newRobot);
-            expect(result.robotName).toEqual(newRobot.robotName);
+            expect(result.name).toEqual(newRobot.name);
         });
     });
 
     describe('When we instantiate patch(), with an id and an updated Robot', () => {
         test('It should return the updated Robot', async () => {
             const updatedRobot = {
-                robotName: 'Jose',
+                name: 'Jose',
             };
             const result = await repository.patch(testIds[0], updatedRobot);
-            expect(result.robotName).toEqual(updatedRobot.robotName);
+            expect(result.name).toEqual(updatedRobot.name);
         });
 
         test('If the id is not valid, it should throw an error', async () => {

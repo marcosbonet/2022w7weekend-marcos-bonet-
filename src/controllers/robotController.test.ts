@@ -1,28 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
-import { RobotTypes } from '../entities/robot.Types.js';
+
 import { CustomError, HTTPError } from '../interfaces/error.js';
 
 import { RobotRepository } from '../repository/robot.repository.js';
+import { UserRepository } from '../repository/user.js';
 import { RobotController } from './robotController.js';
 
 jest.mock('../repository/robot.repository.js');
 
-const mockData: Array<RobotTypes> = [
+const mockData = [
     {
-        id: '11tring',
-        robotName: 'strin33g',
-        velocity: 2,
-        resistent: 4,
-        creationDate: 'string',
+        id: '33string',
+        name: 'strin33g',
         img: 'string',
+        speed: 2,
+        resistance: 4,
+        date: '06/85',
     },
     {
         id: 'string',
-        robotName: 'string',
-        velocity: 1,
-        resistent: 2,
-        creationDate: 'string3',
-        img: 'string3',
+        name: '12trin33g',
+        img: 'string',
+        speed: 2,
+        resistance: 4,
+        date: '06/85',
     },
 ];
 
@@ -39,8 +40,9 @@ describe('Given RobotController', () => {
         RobotRepository.prototype.delete = jest
             .fn()
             .mockResolvedValue(mockData);
-        const repository = new RobotRepository();
-        const robotController = new RobotController(repository);
+        const repository = RobotRepository.getInstance();
+        const userRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, userRepo);
 
         const req: Partial<Request> = {};
         const res: Partial<Response> = {
@@ -86,8 +88,9 @@ describe('Given', () => {
     RobotRepository.prototype.post = jest.fn().mockRejectedValue(['Robot']);
     RobotRepository.prototype.patch = jest.fn().mockRejectedValue(['Robot']);
     RobotRepository.prototype.delete = jest.fn().mockRejectedValue(['Robot']);
-    const repository = new RobotRepository();
-    const robotController = new RobotController(repository);
+    const repository = RobotRepository.getInstance();
+    const userRepo = UserRepository.getInstance();
+    const robotController = new RobotController(repository, userRepo);
 
     const req: Partial<Request> = {};
     const res: Partial<Response> = {

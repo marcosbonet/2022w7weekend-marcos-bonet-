@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { RobotTypes } from '../entities/robot.Types.js';
-import { User } from '../entities/user.js';
+import { UserTypes } from '../entities/user.js';
 import { HTTPError } from '../interfaces/error.js';
 import { BasicData, Data } from '../repository/repository.js';
 import { createToken, passwdValidate } from '../Services/auth.js';
 
 export class UserController {
     constructor(
-        public readonly repository: BasicData<User>,
+        public readonly repository: BasicData<UserTypes>,
         public readonly robotRepo: Data<RobotTypes>
     ) {
         //
@@ -16,7 +16,7 @@ export class UserController {
     async register(req: Request, resp: Response, next: NextFunction) {
         try {
             const user = await this.repository.post(req.body);
-            resp.json({ user });
+            resp.status(201).json({ user });
         } catch (error) {
             const httpError = new HTTPError(
                 503,
@@ -30,7 +30,7 @@ export class UserController {
     async login(req: Request, resp: Response, next: NextFunction) {
         try {
             const user = await this.repository.findOne({ name: req.body.name });
-            user.id;
+            user.id.toString;
             const isPasswdValid = await passwdValidate(
                 req.body.passwd,
                 user.passwd
@@ -43,10 +43,10 @@ export class UserController {
             });
             resp.json({ token });
         } catch (error) {
-            next(this.#createHttpError(error as Error));
+            next(this.createHttpError(error as Error));
         }
     }
-    #createHttpError(error: Error) {
+    createHttpError(error: Error) {
         if ((error as Error).message === 'Not found id') {
             const httpError = new HTTPError(
                 404,

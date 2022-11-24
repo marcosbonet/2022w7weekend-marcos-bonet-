@@ -7,7 +7,9 @@ import { SECRET } from '../config.js';
 // config.SECRET = 'fjksdjksfjk'
 
 const mock = {
-    userName: 'nestor',
+    id: '1234asd',
+    name: 'nestor',
+    role: 'user',
 };
 
 describe('Given createToken ', () => {
@@ -19,13 +21,12 @@ describe('Given createToken ', () => {
     });
 });
 
-describe('Given readToken ', () => {
-    describe('Whne token is valid', () => {
-        const token = createToken(mock);
-        console.log(token);
+describe('Given "readToken"', () => {
+    describe('When token is valid', () => {
+        const validToken = createToken(mock);
         test('Then', () => {
-            const r = readToken(token);
-            expect(r.userName).toEqual(mock.userName);
+            const result = readToken(validToken);
+            expect(result.name).toEqual(mock.name);
         });
     });
 

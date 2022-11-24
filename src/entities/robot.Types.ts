@@ -1,15 +1,16 @@
-import { Schema, Types } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 export type RobotProto = {
     name?: string;
     image?: string;
     speed?: number;
     resistance?: number;
-    date?: Date;
+    date?: Date | string;
     owner?: Types.ObjectId;
 };
 
 export type RobotTypes = {
+    id: Types.ObjectId;
     name: string;
     image: string;
     speed: number;
@@ -41,3 +42,4 @@ robotSchema.set('toJSON', {
         delete returnedObject._id;
     },
 });
+export const Robot = model<RobotTypes>('Robots', robotSchema, 'robots');
