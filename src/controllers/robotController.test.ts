@@ -1,151 +1,189 @@
 import { NextFunction, Request, Response } from 'express';
+import { request } from 'https';
+import { RobotRepository } from '../repository/robot.repository';
+import { UserRepository } from '../repository/user';
 
-import { CustomError, HTTPError } from '../interfaces/error.js';
+import { RobotController } from './robotController';
 
-import { RobotRepository } from '../repository/robot.repository.js';
-import { UserRepository } from '../repository/user.js';
-import { RobotController } from './robotController.js';
-
-jest.mock('../repository/robot.repository.js');
-
-const mockData = [
-    {
-        id: '33string',
-        name: 'strin33g',
-        img: 'string',
-        speed: 2,
-        resistance: 4,
-        date: '06/85',
-    },
-    {
-        id: 'string',
-        name: '12trin33g',
-        img: 'string',
-        speed: 2,
-        resistance: 4,
-        date: '06/85',
-    },
-];
+jest.mock('./../repository/RobotRepository.getInstance');
 
 describe('Given RobotController', () => {
-    describe('When we instantiate getAll()', () => {
-        RobotRepository.prototype.getAll = jest
-            .fn()
-            .mockResolvedValue(mockData);
-        RobotRepository.prototype.get = jest
-            .fn()
-            .mockResolvedValue(mockData[0]);
-        RobotRepository.prototype.post = jest.fn().mockResolvedValue(mockData);
-        RobotRepository.prototype.patch = jest.fn().mockResolvedValue(mockData);
-        RobotRepository.prototype.delete = jest
-            .fn()
-            .mockResolvedValue(mockData);
-        const repository = RobotRepository.getInstance();
-        const userRepo = UserRepository.getInstance();
-        const robotController = new RobotController(repository, userRepo);
+    const next: NextFunction = jest.fn();
+    const req: Partial<Request> = {};
 
-        const req: Partial<Request> = {};
-        const res: Partial<Response> = {
+    const mockRobot = {
+        id: '2',
+        name: 'marcosbb',
+        resistance: '9',
+        speed: '9',
+    };
+
+    test('When when we use getAll, then it should give us an array with some robot inside', async () => {
+        RobotRepository.getInstance.prototype.getAll = jest
+            .fn()
+            .mockResolvedValue(['PepeBot']);
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const resp: Partial<Response> = {
             json: jest.fn(),
         };
-        const next: NextFunction = jest.fn();
-        test('Then getAll should have been called', async () => {
-            await robotController.getAll(req as Request, res as Response, next);
-            expect(res.json).toHaveBeenCalledWith({ data: mockData });
-        });
 
-        test('Then get should have been called', async () => {
-            req.params = { id: '0' };
-            await robotController.get(req as Request, res as Response, next);
-            expect(res.json).toHaveBeenCalledWith({ data: mockData[0] });
-        });
-
-        test('Then post should have been called', async () => {
-            await robotController.post(req as Request, res as Response, next);
-            expect(res.json).toHaveBeenCalledWith({ data: mockData });
-        });
-
-        test('Then patch should have been called', async () => {
-            await robotController.patch(req as Request, res as Response, next);
-            expect(res.json).toHaveBeenCalledWith({ data: mockData });
-        });
-
-        test('Then delete should have been called', async () => {
-            await robotController.delete(req as Request, res as Response, next);
-            expect(res.json).toHaveBeenCalledWith({ data: mockData });
-        });
+        await robotController.getAll(req as Request, resp as Response, next);
     });
-});
+    test('When when we use getAll, then it should give us an error', async () => {
+        RobotRepository.getInstance.prototype.getAll = jest
+            .fn()
+            .mockRejectedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
 
-describe('Given', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let error: CustomError;
-    beforeEach(() => {
-        error = new HTTPError(418, 'Tea Pot', 'Ja, ja, ja');
-    });
-    RobotRepository.prototype.getAll = jest.fn().mockRejectedValue(['Robot']);
-    RobotRepository.prototype.get = jest.fn().mockResolvedValue('Robot');
-    RobotRepository.prototype.post = jest.fn().mockRejectedValue(['Robot']);
-    RobotRepository.prototype.patch = jest.fn().mockRejectedValue(['Robot']);
-    RobotRepository.prototype.delete = jest.fn().mockRejectedValue(['Robot']);
-    const repository = RobotRepository.getInstance();
-    const userRepo = UserRepository.getInstance();
-    const robotController = new RobotController(repository, userRepo);
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
 
-    const req: Partial<Request> = {};
-    const res: Partial<Response> = {
-        json: jest.fn(),
-    };
-    const next: NextFunction = jest.fn();
-    test('Then when call the method GetAll cant get a response, it should return an error', async () => {
-        (repository.getAll as jest.Mock).mockRejectedValue('Error');
-        await robotController.getAll(
-            req as Request,
-            res as Response,
-            next as NextFunction
-        );
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toBeInstanceOf(HTTPError);
+        await robotController.getAll(req as Request, resp as Response, next);
     });
-    test('Then when call the method Get cant get a response, it should return an error', async () => {
-        (repository.get as jest.Mock).mockRejectedValue('Error');
-        await robotController.get(
-            req as Request,
-            res as Response,
-            next as NextFunction
-        );
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toBeInstanceOf(HTTPError);
+    test('When when we use get, then it should give us a robot item', async () => {
+        RobotRepository.getInstance.prototype.get = jest
+            .fn()
+            .mockResolvedValue({ ...mockRobot });
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {
+            ...request,
+            params: {
+                id: '2',
+            },
+        };
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.get(req as Request, resp as Response, next);
     });
-    test('Then when call the method post cant get a response, it should return an error', async () => {
-        (repository.post as jest.Mock).mockRejectedValue('Error');
-        await robotController.post(
-            req as Request,
-            res as Response,
-            next as NextFunction
-        );
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toBeInstanceOf(HTTPError);
+    test('When when we use get, then it should give us an error', async () => {
+        RobotRepository.getInstance.prototype.get = jest
+            .fn()
+            .mockRejectedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {};
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.get(req as Request, resp as Response, next);
     });
 
-    test('Then when call the method post cant get a response, it should return an error', async () => {
-        (repository.patch as jest.Mock).mockRejectedValue('Error');
-        await robotController.patch(
-            req as Request,
-            res as Response,
-            next as NextFunction
-        );
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toBeInstanceOf(HTTPError);
+    test('When when we use post, then it should create us a robot item', async () => {
+        RobotRepository.getInstance.prototype.post = jest
+            .fn()
+            .mockResolvedValue({ ...mockRobot });
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {
+            ...request,
+            body: { ...mockRobot },
+        };
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.post(req as Request, resp as Response, next);
     });
-    test('Then when call the method post cant get a response, it should return an error', async () => {
-        (repository.delete as jest.Mock).mockRejectedValue('Error');
-        await robotController.delete(
-            req as Request,
-            res as Response,
-            next as NextFunction
-        );
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toBeInstanceOf(HTTPError);
+    test('When when we use post, then it should give us an error', async () => {
+        RobotRepository.getInstance.prototype.post = jest
+            .fn()
+            .mockRejectedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {};
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.post(req as Request, resp as Response, next);
+    });
+    test('When when we use patch, then it should modify a robot item', async () => {
+        RobotRepository.getInstance.prototype.patch = jest
+            .fn()
+            .mockResolvedValue({ ...mockRobot, speed: '15' });
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {
+            ...request,
+            params: {
+                id: '2',
+            },
+            body: { ...mockRobot, speed: '15' },
+        };
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.patch(req as Request, resp as Response, next);
+    });
+    test('When when we use patch, then it should give us an error', async () => {
+        RobotRepository.getInstance.prototype.patch = jest
+            .fn()
+            .mockRejectedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {};
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.patch(req as Request, resp as Response, next);
+    });
+    test('When when we use delete, then it should delete a robot item', async () => {
+        RobotRepository.getInstance.prototype.delete = jest
+            .fn()
+            .mockResolvedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {
+            ...request,
+            params: {
+                id: '2',
+            },
+        };
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.delete(req as Request, resp as Response, next);
+    });
+    test('When when we use delete, then it should give us an error', async () => {
+        RobotRepository.getInstance.prototype.delete = jest
+            .fn()
+            .mockRejectedValue({});
+        const repository = RobotRepository.getInstance();
+        const useRepo = UserRepository.getInstance();
+        const robotController = new RobotController(repository, useRepo);
+
+        const req: Partial<Request> = {};
+        const resp: Partial<Response> = {
+            json: jest.fn(),
+        };
+
+        await robotController.delete(req as Request, resp as Response, next);
     });
 });

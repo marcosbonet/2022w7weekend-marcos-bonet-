@@ -3,27 +3,21 @@ import { dbConnect } from '../DB.connect';
 import { Robot } from '../entities/robot.Types';
 import { RobotRepository } from './robot.repository';
 
-const mockData = [
-    {
-        name: 'manuel',
-    },
-    {
-        name: 'rfederico',
-    },
-];
+const mockData = [{ name: 'cacho' }, { name: 'lisandrp' }];
 
 describe('Given the robots repository,', () => {
     const repository = RobotRepository.getInstance();
     let testIds: Array<string>;
-    describe('When we instantiate getAll()', () => {
-        beforeEach(async () => {
-            await dbConnect();
-            await Robot.deleteMany();
-            await Robot.insertMany(mockData);
-            const data = await Robot.find();
-            testIds = [data[0].id, data[1].id];
-        });
 
+    beforeAll(async () => {
+        await dbConnect();
+        await Robot.deleteMany();
+        await Robot.insertMany(mockData);
+        const data = await Robot.find();
+        testIds = [data[0].id, data[1].id];
+    });
+
+    describe('When we instantiate getAll()', () => {
         test('It should return an array of all Robots', async () => {
             const result = await repository.getAll();
             expect(result[0].name).toEqual(mockData[0].name);
@@ -43,15 +37,16 @@ describe('Given the robots repository,', () => {
         });
     });
 
+    describe('When we instantiate find(), with an id', () => {
+        test('It should return the search', async () => {
+            const result = await repository.findOne(mockData[0]);
+            expect(result.name).toEqual(mockData[0].name);
+        });
+    });
+
     describe('When we instantiate post()', () => {
         test('It should return the new Robot', async () => {
-            const newRobot = {
-                name: 'robert',
-                img: 'url.img',
-                speed: 5,
-                resistance: 4,
-                date: '06/85',
-            };
+            const newRobot = { name: 'Elena' };
             const result = await repository.post(newRobot);
             expect(result.name).toEqual(newRobot.name);
         });
@@ -59,9 +54,7 @@ describe('Given the robots repository,', () => {
 
     describe('When we instantiate patch(), with an id and an updated Robot', () => {
         test('It should return the updated Robot', async () => {
-            const updatedRobot = {
-                name: 'Jose',
-            };
+            const updatedRobot = { name: 'embloque' };
             const result = await repository.patch(testIds[0], updatedRobot);
             expect(result.name).toEqual(updatedRobot.name);
         });
