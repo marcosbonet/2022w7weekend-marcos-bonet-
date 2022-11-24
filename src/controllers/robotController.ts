@@ -1,16 +1,18 @@
+import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { RobotTypes } from '../entities/robot.Types.js';
-import { User } from '../entities/user.js';
-
+import { UserTypes } from '../entities/user.js';
+import { ExtraRequest } from '../middlewares/interceptors.js';
 import { HTTPError } from '../interfaces/error.js';
 import { BasicData, Data } from '../repository/repository.js';
 
+const debug = createDebug('W8:controllers:robotController');
 export class RobotController {
     constructor(
         public dataModel: Data<RobotTypes>,
-        public userRepo: BasicData<User>
+        public userRepo: BasicData<UserTypes>
     ) {
-        //
+        debug('instance');
     }
     async getAll(req: Request, resp: Response, next: NextFunction) {
         try {
@@ -40,10 +42,17 @@ export class RobotController {
         }
     }
 
-    async post(req: Request, resp: Response, next: NextFunction) {
+    async post(req: ExtraRequest, resp: Response, next: NextFunction) {
         try {
+            debug('post');
+            if (!req.payload) {
+                throw new Error('Invalid payload');
+            }
+            const user = await this.userRepo.get(req.payload.id);
+            req.body.owner = user.id;
             const robot = await this.dataModel.post(req.body);
-            resp.json({ robot });
+
+            resp.status(201).json({ robot });
         } catch (error) {
             const httpError = new HTTPError(
                 503,

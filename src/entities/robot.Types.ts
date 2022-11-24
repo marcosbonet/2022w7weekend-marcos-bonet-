@@ -1,28 +1,25 @@
-import mongoose, { Schema } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 export type RobotProto = {
     name?: string;
     image?: string;
     speed?: number;
     resistance?: number;
-    date?: Date;
-    owner?: typeof mongoose.Types.ObjectId;
+    date?: Date | string;
+    owner?: Types.ObjectId;
 };
 
 export type RobotTypes = {
-    id: typeof mongoose.Types.ObjectId;
+    id: Types.ObjectId;
     name: string;
     image: string;
     speed: number;
     resistance: number;
     date: Date;
-    owner: typeof mongoose.Types.ObjectId;
+    owner: Types.ObjectId;
 };
 
 export const robotSchema = new Schema<RobotTypes>({
-    id: {
-        type: mongoose.Types.ObjectId,
-    },
     name: {
         type: String,
         required: true,
@@ -33,7 +30,7 @@ export const robotSchema = new Schema<RobotTypes>({
     resistance: { type: Number, min: 0, max: 10 },
     date: Date,
     owner: {
-        type: mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
     },
 });
@@ -45,3 +42,4 @@ robotSchema.set('toJSON', {
         delete returnedObject._id;
     },
 });
+export const Robot = model<RobotTypes>('Robots', robotSchema, 'robots');

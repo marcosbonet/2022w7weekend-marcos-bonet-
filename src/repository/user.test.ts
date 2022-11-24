@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { dbConnect } from '../DB.connect.js';
+import { UserModel } from '../entities/user.js';
 import { UserRepository } from './user.js';
 describe('Given UserRepository', () => {
     const mockData = [
@@ -17,13 +18,14 @@ describe('Given UserRepository', () => {
         },
     ];
 
-    const repository = new UserRepository();
+    const repository = UserRepository.getInstance();
     let testIds: Array<string>;
     beforeAll(async () => {
         await dbConnect();
-        await repository.getUserModel().deleteMany();
-        await repository.getUserModel().insertMany(mockData);
-        const data = await repository.getUserModel().find();
+
+        await UserModel.deleteMany();
+        await UserModel.insertMany(mockData);
+        const data = await UserModel.find();
         testIds = [data[0].id, data[1].id];
     });
     afterAll(async () => {
@@ -37,7 +39,7 @@ describe('Given UserRepository', () => {
 
     test('when get it receives an invalid id it should return an error', async () => {
         expect(async () => {
-            await repository.get(testIds[4]);
+            await repository.get(testIds[8]);
         }).rejects.toThrowError();
     });
 

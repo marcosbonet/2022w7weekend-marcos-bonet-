@@ -4,7 +4,7 @@ import { HTTPError } from '../interfaces/error.js';
 import { RobotRepository } from '../repository/robot.repository.js';
 import { readToken } from '../Services/auth.js';
 
-interface ExtraRequest extends Request {
+export interface ExtraRequest extends Request {
     payload?: JwtPayload;
 }
 
@@ -36,7 +36,7 @@ export const who = async (
     res: Response,
     next: NextFunction
 ) => {
-    const repo = new RobotRepository();
+    const repo = RobotRepository.getInstance();
     try {
         const robot = await repo.get(req.params.id);
         console.log(robot);

@@ -1,3 +1,6 @@
+import { RobotTypes } from '../entities/robot.Types';
+import { UserTypes } from '../entities/user';
+
 export type id = string | number;
 
 export interface BasicData<T> {
@@ -16,4 +19,8 @@ export interface Data<T> extends BasicData<T> {
 
     patch: (id: id, data: Partial<T>) => Promise<T>;
     delete: (id: id) => Promise<id>;
+}
+
+export interface UserRepo<T> extends BasicData<T> {
+    addRobot: (user: UserTypes, robot: RobotTypes) => Promise<T>;
 }

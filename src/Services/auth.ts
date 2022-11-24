@@ -8,7 +8,7 @@ export const getSecret = (secret = SECRET) => {
     }
     return secret;
 };
-type TokenPayload = {
+export type TokenPayload = {
     id: string;
     name: string;
     role: string;

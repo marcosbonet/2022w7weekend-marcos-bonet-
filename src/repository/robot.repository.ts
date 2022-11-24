@@ -1,20 +1,33 @@
-import mongoose, { model } from 'mongoose';
-import {
-    RobotProto,
-    robotSchema,
-    RobotTypes,
-} from '../entities/robot.Types.js';
+import { debug } from 'console';
+import mongoose, { Types } from 'mongoose';
+import { RobotProto, Robot, RobotTypes } from '../entities/robot.Types.js';
 
 import { Data, id } from './repository.js';
 export class RobotRepository implements Data<RobotTypes> {
-    #Model = model('Robots', robotSchema, 'robots');
+    static instance: RobotRepository;
 
+    public static getInstance(): RobotRepository {
+        if (!RobotRepository.instance) {
+            RobotRepository.instance = new RobotRepository();
+        }
+        return RobotRepository.instance;
+    }
+
+    private constructor() {
+        debug('instance');
+    }
     async getAll(): Promise<Array<RobotTypes>> {
-        return this.#Model.find();
+        return Robot.find().populate('owner', {
+            robots: 0,
+        });
     }
 
     async get(id: id): Promise<RobotTypes> {
-        const result = await this.#Model.findById(id);
+        const result = await Robot.findById(id).populate<{
+            _id: Types.ObjectId;
+        }>('owner', {
+            robots: 0,
+        });
         if (!result) throw new Error('Not found id');
         return result as RobotTypes;
     }
@@ -22,31 +35,43 @@ export class RobotRepository implements Data<RobotTypes> {
         [key: string]: string | number | Date;
     }): Promise<RobotTypes> {
         console.log({ search });
-        const result = await this.#Model.findOne(search); //as Robot;
+        const result = await Robot.findOne(search).populate('owner', {
+            robots: 0,
+        }); //as Robot;
         if (!result) throw new Error('Not found id');
         return result as unknown as RobotTypes;
     }
 
-    async post(newRobot: RobotProto): Promise<RobotTypes> {
-        const result = await this.#Model.create(newRobot);
+    async post(data: RobotProto): Promise<RobotTypes> {
+        debug('post', data);
+        data.date = this.#generateDate(data.date as string);
+        const result = await (
+            await Robot.create(data)
+        ).populate('owner', {
+            robots: 0,
+        });
         return result as RobotTypes;
     }
 
     async patch(id: id, updateRobot: Partial<RobotTypes>): Promise<RobotTypes> {
-        const result = await this.#Model.findByIdAndUpdate(id, updateRobot, {
+        const result = await Robot.findByIdAndUpdate(id, updateRobot, {
             new: true,
+        }).populate('owner', {
+            robots: 0,
         });
         if (!result) throw new Error('Not found id');
         return result as RobotTypes;
     }
 
     async delete(id: id): Promise<id> {
-        const result = (await this.#Model.findByIdAndDelete(id)) as RobotTypes;
+        const result = await Robot.findByIdAndDelete(id).populate('owner', {
+            robots: 0,
+        });
         if (result === null) throw new Error('Not found id');
         return id;
     }
 
-    #disconnect() {
+    disconnect() {
         mongoose.disconnect();
     }
 
@@ -55,8 +80,5 @@ export class RobotRepository implements Data<RobotTypes> {
         const validDate =
             new Date(date) === new Date('') ? new Date() : new Date(date);
         return validDate;
-    }
-    getModel() {
-        return this.#Model;
     }
 }
