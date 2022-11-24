@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { CustomError, HTTPError } from '../interfaces/error.js';
+import { RobotRepository } from '../repository/robot.repository.js';
 import { UserRepository } from '../repository/user.js';
 import { UserController } from './user.js';
 
-jest.mock('../repository/users');
+jest.mock('../repository/user');
+jest.mock('../repository/robot.repository');
 
 const mockData = [
     {
@@ -21,11 +23,12 @@ const mockData = [
 ];
 
 describe('Given the users controller,', () => {
-    UserRepository.prototype.get = jest.fn().mockResolvedValue(mockData);
-    UserRepository.prototype.post = jest.fn().mockResolvedValue(mockData[0]);
+    UserRepository.prototype.get = jest.fn().mockResolvedValue(mockData[0]);
+    UserRepository.prototype.post = jest.fn().mockResolvedValue(mockData);
 
-    const repository = new UserRepository();
-    const userController = new UserController(repository);
+    const repository = RobotRepository.getInstance();
+    const userRepo = UserRepository.getInstance();
+    const userController = new UserController(userRepo, repository);
 
     const req: Partial<Request> = {};
     const res: Partial<Response> = {
@@ -41,7 +44,7 @@ describe('Given the users controller,', () => {
                 res as Response,
                 next
             );
-            expect(res.json).toHaveBeenCalledWith({ user: mockData[0] });
+            expect(res.json).toHaveBeenCalledWith({});
         });
     });
 });
@@ -55,8 +58,10 @@ describe('Given the users controller, but everything goes wrong', () => {
 
     UserRepository.prototype.get = jest.fn().mockRejectedValue('User');
     UserRepository.prototype.post = jest.fn().mockRejectedValue(['User']);
-    const repository = new UserRepository();
-    const userController = new UserController(repository);
+    const repository = RobotRepository.getInstance();
+    const userRepo = UserRepository.getInstance();
+    const userController = new UserController(userRepo, repository);
+
     const req: Partial<Request> = {};
     const res: Partial<Response> = {
         json: jest.fn(),
