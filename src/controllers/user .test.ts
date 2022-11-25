@@ -1,50 +1,63 @@
 import { NextFunction, Request, Response } from 'express';
-import { CustomError, HTTPError } from '../interfaces/error.js';
-import { RobotRepository } from '../repository/robot.repository.js';
-import { UserRepository } from '../repository/user.js';
-import { UserController } from './user.js';
+import { CustomError, HTTPError } from '../interfaces/error';
+import { RobotRepository } from '../repository/robot.repository';
+import { UserRepository } from '../repository/user';
+import { createToken, passwdValidate } from '../Services/auth';
+import { UserController } from './user';
 
-jest.mock('../repository/user');
-jest.mock('../repository/robot.repository');
+jest.mock('../services/auth');
 
 const mockData = [
-    {
-        name: 'tuel',
-        email: 'pepe@gmail.com',
-        password: 'pepe1234',
-        role: 'Admin',
-    },
-    {
-        name: 'Ernesto',
-        email: 'ernest@gmail.com',
-        password: '789ErnesT',
-        role: 'Empleado',
-    },
+    { name: 'Pepe', role: 'Admin', id: '4as56d' },
+    { name: 'Ernesto', role: 'user', id: 'a4sd8a' },
 ];
 
 describe('Given the users controller,', () => {
-    UserRepository.prototype.get = jest.fn().mockResolvedValue(mockData[0]);
-    UserRepository.prototype.post = jest.fn().mockResolvedValue(mockData);
+    let repository: RobotRepository;
+    let userRepo: UserRepository;
+    let userController: UserController;
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let next: NextFunction;
 
-    const repository = RobotRepository.getInstance();
-    const userRepo = UserRepository.getInstance();
-    const userController = new UserController(userRepo, repository);
+    beforeEach(() => {
+        repository = RobotRepository.getInstance();
+        userRepo = UserRepository.getInstance();
+        userRepo.post = jest.fn().mockResolvedValue(mockData[0]);
+        userRepo.findOne = jest.fn().mockResolvedValue(mockData[0]);
+        userController = new (userRepo, repository)();
 
-    const req: Partial<Request> = {};
-    const res: Partial<Response> = {
-        json: jest.fn(),
-    };
-    const next: NextFunction = jest.fn();
+        req = {};
+        res = {};
+        res.status = jest.fn().mockReturnValue(res);
+        res.json = jest.fn();
+        next = jest.fn();
+    });
 
     describe('When we instantiate register(),', () => {
         test('It should create a new user', async () => {
-            req.params = mockData[0];
+            req.body = { mockData };
             await userController.register(
                 req as Request,
                 res as Response,
                 next
             );
-            expect(res.json).toHaveBeenCalledWith({});
+            expect(res.json).toHaveBeenCalledWith({ user: mockData[0] });
+        });
+    });
+
+    describe('When we instantiate login()', () => {
+        test('With an invalid password it should throw an error', async () => {
+            const error: CustomError = new HTTPError(
+                404,
+                'Not found id',
+                'message of error'
+            );
+            (passwdValidate as jest.Mock).mockResolvedValue(false);
+            (createToken as jest.Mock).mockReturnValue('token');
+            req.body = { password: 'password' };
+            await userController.login(req as Request, res as Response, next);
+            expect(error).toBeInstanceOf(HTTPError);
         });
     });
 });
@@ -55,12 +68,12 @@ describe('Given the users controller, but everything goes wrong', () => {
         'Not found id',
         'message of error'
     );
-
-    UserRepository.prototype.get = jest.fn().mockRejectedValue('User');
-    UserRepository.prototype.post = jest.fn().mockRejectedValue(['User']);
     const repository = RobotRepository.getInstance();
     const userRepo = UserRepository.getInstance();
-    const userController = new UserController(userRepo, repository);
+
+    userRepo.get = jest.fn().mockRejectedValue('User');
+    userRepo.post = jest.fn().mockRejectedValue(['User']);
+    const userController = new (userRepo, repository)();
 
     const req: Partial<Request> = {};
     const res: Partial<Response> = {
@@ -73,7 +86,7 @@ describe('Given the users controller, but everything goes wrong', () => {
         expect(error).toBeInstanceOf(HTTPError);
     });
 
-    describe('When we instantiate post()', () => {
+    describe('When we instantiate login()', () => {
         test('It should throw an error', async () => {
             await userController.login(req as Request, res as Response, next);
             expect(error).toBeInstanceOf(Error);
