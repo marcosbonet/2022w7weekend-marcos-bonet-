@@ -3,7 +3,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import { HTTPError } from '../interfaces/error.js';
 import { RobotRepository } from '../repository/robot.repository.js';
 import { readToken } from '../Services/auth.js';
-
+import createDebug from 'debug';
+const debug = createDebug('W8:middlewares:interceptors');
 export interface ExtraRequest extends Request {
     payload?: JwtPayload;
 }
@@ -13,8 +14,9 @@ export const logged = (
     res: Response,
     next: NextFunction
 ) => {
+    console.log('pepe');
     const authString = req.get('Authorization');
-    if (!authString || authString?.startsWith('Bearer')) {
+    if (!authString || !authString?.startsWith('Bearer')) {
         next(
             new HTTPError(403, 'Forbidden', 'Usuario o contraseña incorrecto')
         );
@@ -22,8 +24,9 @@ export const logged = (
     }
     try {
         const token = authString.slice(7);
-        readToken(token);
+        debug(token, 'token propio');
         req.payload = readToken(token);
+        debug(req.payload, 'payload propio');
         next();
     } catch (error) {
         next(

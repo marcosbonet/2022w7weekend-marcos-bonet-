@@ -11,9 +11,7 @@ export class RobotController {
     constructor(
         public dataModel: Data<RobotTypes>,
         public userRepo: BasicData<UserTypes>
-    ) {
-        debug('instance');
-    }
+    ) {}
     async getAll(req: Request, resp: Response, next: NextFunction) {
         try {
             const data = await this.dataModel.getAll();
@@ -44,10 +42,10 @@ export class RobotController {
 
     async post(req: ExtraRequest, resp: Response, next: NextFunction) {
         try {
-            debug('post');
             if (!req.payload) {
                 throw new Error('Invalid payload');
             }
+
             const user = await this.userRepo.get(req.payload.id);
             req.body.owner = user.id;
             const robot = await this.dataModel.post(req.body);

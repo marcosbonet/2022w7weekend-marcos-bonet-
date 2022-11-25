@@ -15,6 +15,7 @@ export class UserController {
 
     async register(req: Request, resp: Response, next: NextFunction) {
         try {
+            console.log(req.body);
             const user = await this.repository.post(req.body);
             resp.status(201).json({ user });
         } catch (error) {
