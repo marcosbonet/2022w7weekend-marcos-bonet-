@@ -3,7 +3,7 @@ import { dbConnect } from '../DB.connect';
 import { Robot } from '../entities/robot.Types';
 import { RobotRepository } from './robot.repository';
 
-const mockData = [{ name: 'cacho' }, { name: 'lisandrp' }];
+const mockData = [{ name: 'Pepe' }, { name: 'Ernesto' }];
 
 describe('Given the robots repository,', () => {
     const repository = RobotRepository.getInstance();
@@ -54,7 +54,7 @@ describe('Given the robots repository,', () => {
 
     describe('When we instantiate patch(), with an id and an updated Robot', () => {
         test('It should return the updated Robot', async () => {
-            const updatedRobot = { name: 'embloque' };
+            const updatedRobot = { name: 'Jose' };
             const result = await repository.patch(testIds[0], updatedRobot);
             expect(result.name).toEqual(updatedRobot.name);
         });

@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import { dbConnect } from '../DB.connect.js';
-import { UserModel } from '../entities/user.js';
-import { UserRepository } from './user.js';
+import { dbConnect } from '../DB.connect';
+import { UserRepository } from './user';
+
 describe('Given UserRepository', () => {
     const mockData = [
         {
-            name: 'pedro',
+            name: 'Pepe',
             email: 'pepe@gmail.com',
             password: 'pepe1234',
             role: 'Admin',
@@ -22,10 +22,9 @@ describe('Given UserRepository', () => {
     let testIds: Array<string>;
     beforeAll(async () => {
         await dbConnect();
-
-        await UserModel.deleteMany();
-        await UserModel.insertMany(mockData);
-        const data = await UserModel.find();
+        await repository.get().deleteMany();
+        await repository.get().insertMany(mockData);
+        const data = await repository.get().finOne();
         testIds = [data[0].id, data[1].id];
     });
     afterAll(async () => {
@@ -39,7 +38,7 @@ describe('Given UserRepository', () => {
 
     test('when get it receives an invalid id it should return an error', async () => {
         expect(async () => {
-            await repository.get(testIds[8]);
+            await repository.get(testIds[4]);
         }).rejects.toThrowError();
     });
 
@@ -56,7 +55,7 @@ describe('Given UserRepository', () => {
 
     test('when post it receives an invalid id it should return an error', async () => {
         expect(async () => {
-            await repository.post({ passwd: testIds[2] });
+            await repository.post({ password: testIds[3] });
         }).rejects.toThrowError();
     });
 });

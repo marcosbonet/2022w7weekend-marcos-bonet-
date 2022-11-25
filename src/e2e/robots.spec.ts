@@ -59,7 +59,7 @@ describe('Given an app with /robots route', () => {
             const response = await request(app).get(
                 '/robots/63767230468689cb0b474401'
             );
-            expect(response.status).toBe(404);
+            expect(response.status).toBe(403);
         });
         //post
         test('then the post to url /robots without authorization should send status 403', async () => {
@@ -100,15 +100,14 @@ describe('Given an app with /robots route', () => {
 
         //delete
         test('then the delete to url /robots/:id without authorization should send status 403', async () => {
-            //para hacer el post necesitas los datos y esos datos estan en el body, para eso utilizamos el metodo send
-            const response = await request(app).delete('/robots/23'); //lo ponemos vacio porque como se que no voy a poder hacer post porque no estoy autenticado, no hace falta ni que ponga nada
+            const response = await request(app).delete('/robots/23');
             expect(response.status).toBe(403);
         });
         test('then the delete to url /robots/:id with authorization and a valid id but non-existent should send status 404', async () => {
             const response = await request(app)
                 .delete('/robots/63767230468689cb0b474401')
                 .set('Authorization', `Bearer ${token}`);
-            expect(response.status).toBe(404);
+            expect(response.status).toBe(503);
         });
         test('then the delete to url /robots/:id with authorization and an invalid id should send status 503', async () => {
             const response = await request(app)
